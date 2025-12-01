@@ -1,16 +1,129 @@
-# React + Vite
+# 未来の自分と対話 ✨
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+時空を超えて、未来のあなたからアドバイスをもらえるReactアプリケーション。
 
-Currently, two official plugins are available:
+![Future Self Chat](https://img.shields.io/badge/React-19.2.0-blue)
+![Vite](https://img.shields.io/badge/Vite-7.2.4-purple)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1.17-cyan)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📱 機能
 
-## React Compiler
+- **🔑 APIキー管理**: Anthropic APIキーをlocalStorageに安全に保存
+- **📅 未来の年設定**: 西暦年または「○年後」で設定可能
+- **💬 5つの会話モード**:
+  - 💡 アドバイスモード - 未来の自分が今の悩みにアドバイス
+  - 🔄 振り返りモード - 過去(今)を振り返って語る
+  - 🎯 目標達成モード - 夢を叶えた自分として語る
+  - ⚡ 現実チェックモード - 愛ある厳しめの助言
+  - 🌟 励ましモード - とにかく応援してくれる
+- **💬 チャット形式の対話**: リアルタイムでAIと会話
+- **🎨 美しいUI**: グラデーション背景とモダンなデザイン
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 クイックスタート
 
-## Expanding the ESLint configuration
+### 前提条件
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Node.js 18.x 以上
+- npm または yarn
+- Anthropic APIキー（[こちらで取得](https://console.anthropic.com/settings/keys)）
+
+### インストール
+
+```bash
+# リポジトリをクローン
+git clone https://github.com/yamanaka216002/nishi-seiko.git
+cd nishi-seiko
+
+# 依存関係をインストール
+npm install
+
+# 開発サーバーを起動
+npm run dev
+```
+
+ブラウザで `http://localhost:5173/` を開いてください。
+
+## 📖 使い方
+
+1. **APIキーを入力**
+   - [Anthropic Console](https://console.anthropic.com/settings/keys)でAPIキーを作成
+   - アプリの最初のフィールドに貼り付け
+   - 自動的にlocalStorageに保存されます
+
+2. **未来の年を設定**
+   - 西暦年（例: 2035）または「○年後」を入力
+
+3. **会話モードを選択**
+   - 5つのモードから好きなものを選択
+
+4. **対話を始める**
+   - 「対話を始める ✨」ボタンをクリック
+   - 未来の自分とチャット開始！
+
+## 🛠️ 技術スタック
+
+- **React 19.2.0** - UIライブラリ
+- **Vite 7.2.4** - ビルドツール
+- **Tailwind CSS 4.1.17** - スタイリング
+- **Lucide React** - アイコン
+- **Anthropic Claude API** - AI会話エンジン
+
+## 📦 ビルド
+
+```bash
+# プロダクションビルド（注: Tailwind CSS v4の設定調整が必要）
+npm run build
+
+# プレビュー
+npm run preview
+```
+
+## 🔐 セキュリティ
+
+- APIキーはブラウザのlocalStorageに保存されます
+- サーバー側には送信されません
+- ブラウザのストレージをクリアするとAPIキーも削除されます
+
+## 🌐 デプロイ
+
+### Vercel / Netlify
+
+```bash
+npm run build
+```
+
+生成された `dist` フォルダをデプロイしてください。
+
+### Docker
+
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 5173
+CMD ["npm", "run", "dev", "--", "--host"]
+```
+
+## 📝 ライセンス
+
+MIT License
+
+## 🤝 貢献
+
+プルリクエストを歓迎します！
+
+1. このリポジトリをフォーク
+2. 機能ブランチを作成 (`git checkout -b feature/amazing-feature`)
+3. 変更をコミット (`git commit -m 'Add amazing feature'`)
+4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
+5. プルリクエストを作成
+
+## 📧 お問い合わせ
+
+質問やフィードバックがあれば、Issueを作成してください。
+
+---
+
+**未来の自分と対話して、今日をより良くしましょう！** ✨
