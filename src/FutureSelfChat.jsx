@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Send, Calendar, MessageCircle, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Send, Calendar, MessageCircle, Sparkles, Key } from 'lucide-react';
 
 const FutureSelfChat = () => {
   const [step, setStep] = useState('setup');
@@ -9,6 +9,15 @@ const FutureSelfChat = () => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [apiKey, setApiKey] = useState('');
+
+  // Load API key from localStorage on mount
+  useEffect(() => {
+    const savedApiKey = localStorage.getItem('anthropic_api_key');
+    if (savedApiKey) {
+      setApiKey(savedApiKey);
+    }
+  }, []);
 
   const currentYear = 2025;
   const currentAge = new Date().getFullYear() - 1990; // 仮の年齢計算
@@ -60,6 +69,8 @@ ${personality.prefix}のような口調で始めることが多いです。
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
@@ -71,6 +82,11 @@ ${personality.prefix}のような口調で始めることが多いです。
       });
 
       const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error.message || 'API Error');
+      }
+
       const aiMessage = data.content[0].text;
 
       setMessages(prev => [...prev, {
@@ -79,9 +95,10 @@ ${personality.prefix}のような口調で始めることが多いです。
         timestamp: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })
       }]);
     } catch (error) {
+      console.error('API Error:', error);
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: '😅 ごめん、ちょっと通信の調子が悪いみたい。もう一度話しかけてくれる?',
+        content: '😅 ごめん、ちょっと通信の調子が悪いみたい。APIキーが正しいか確認して、もう一度話しかけてくれる?',
         timestamp: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })
       }]);
     }
@@ -104,7 +121,10 @@ ${personality.prefix}のような口調で始めることが多いです。
   };
 
   const startChat = () => {
-    if ((!futureYear && !yearsLater) || !chatMode) return;
+    if ((!futureYear && !yearsLater) || !chatMode || !apiKey) return;
+
+    // Save API key to localStorage
+    localStorage.setItem('anthropic_api_key', apiKey);
 
     const targetYear = parseInt(futureYear) || (currentYear + parseInt(yearsLater));
     const futureAge = calculateFutureAge();
@@ -134,6 +154,31 @@ ${personality.prefix}のような口調で始めることが多いです。
             </div>
 
             <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                  <Key className="w-5 h-5 text-blue-500" />
+                  Anthropic API キー
+                </label>
+                <input
+                  type="password"
+                  placeholder="sk-ant-..."
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors font-mono text-sm"
+                />
+                <p className="mt-2 text-xs text-gray-500">
+                  🔒 APIキーはブラウザのlocalStorageに保存されます。
+                  <a
+                    href="https://console.anthropic.com/settings/keys"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline ml-1"
+                  >
+                    APIキーを取得する
+                  </a>
+                </p>
+              </div>
+
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-purple-500" />
@@ -204,11 +249,18 @@ ${personality.prefix}のような口調で始めることが多いです。
 
               <button
                 onClick={startChat}
-                disabled={(!futureYear && !yearsLater) || !chatMode}
+                disabled={(!futureYear && !yearsLater) || !chatMode || !apiKey}
                 className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
               >
                 対話を始める ✨
               </button>
+              {(!apiKey || (!futureYear && !yearsLater) || !chatMode) && (
+                <p className="text-center text-sm text-gray-500">
+                  {!apiKey && '⚠️ APIキーを入力してください'}
+                  {apiKey && (!futureYear && !yearsLater) && '⚠️ 未来の年を設定してください'}
+                  {apiKey && (futureYear || yearsLater) && !chatMode && '⚠️ 会話モードを選択してください'}
+                </p>
+              )}
             </div>
           </div>
         </div>
