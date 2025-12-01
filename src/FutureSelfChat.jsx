@@ -65,12 +65,11 @@ ${personality.prefix}のような口調で始めることが多いです。
 具体的で心に響くアドバイスをしてください。絵文字も適度に使って感情豊かに。`;
 
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch('/api/v1/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
